@@ -1,6 +1,7 @@
 package jp.co.tdc.jamcha.analyzer;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
@@ -11,6 +12,6 @@ import java.util.List;
 @Getter
 @Accessors(fluent = true)
 public class JavaParserConfiguration {
-    private final List<Path> dependentSourceDirectories;
-    private final List<Path> dependentJarDirectories;
+    @NonNull private final List<Path> dependentSourceDirectories;
+    @NonNull private final List<Path> dependentJarDirectories;
 }

@@ -1,6 +1,7 @@
 package jp.co.tdc.jamcha.model;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
@@ -8,6 +9,10 @@ import lombok.experimental.Accessors;
 @Getter
 @Accessors(fluent = true)
 public class Callee {
-    private final CalleeSignature signature;
-    private final Position begin;
+    @NonNull private final PackageName packageName;
+    @NonNull private final TypeQualifiedName typeQualifiedName;
+    @NonNull private final TypeName typeName;
+    @NonNull private final MethodQualifiedSignature methodQualifiedSignature;
+    @NonNull private final MethodSignature methodSignature;
+    @NonNull private final Position begin;
 }

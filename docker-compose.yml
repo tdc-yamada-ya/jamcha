@@ -1,0 +1,8 @@
+version: "3"
+services:
+  jamcha:
+    image: docker.pkg.github.com/tdc-yamada-ya/jamcha/jamcha
+    volumes:
+      - "./examples/basic/src:/src"
+      - "./examples/basic/.reports:/reports"
+    command: "-i /src -s /src -o /reports"

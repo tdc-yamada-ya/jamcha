@@ -1,6 +1,7 @@
 package jp.co.tdc.jamcha.reporter.table;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
@@ -10,5 +11,5 @@ import java.util.List;
 @Getter
 @Accessors(fluent = true)
 public class Row {
-    private final List<Cell> cells;
+    @NonNull private final List<Cell> cells;
 }

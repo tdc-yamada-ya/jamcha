@@ -10,12 +10,14 @@ import java.util.List;
 
 @Getter
 @Accessors(fluent = true)
-public class TypeDeclarationCollector {
+public class TypeDeclarationCollector implements NodeWalker.Visitor {
     private final List<TypeDeclaration<?>> declarations = new ArrayList<>();
 
-    public void collect(Node n) {
+    @Override
+    public boolean visit(Node n) {
         if (n instanceof TypeDeclaration) {
-            declarations.add((TypeDeclaration) n);
+            declarations.add((TypeDeclaration<?>) n);
         }
+        return true;
     }
 }

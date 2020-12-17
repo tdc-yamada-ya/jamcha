@@ -5,8 +5,9 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.nodeTypes.NodeWithRange;
-import jp.co.tdc.jamcha.model.*;
+import jp.co.tdc.jamcha.model.Callee;
+import jp.co.tdc.jamcha.model.Caller;
+import jp.co.tdc.jamcha.model.Type;
 import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
@@ -21,9 +22,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SourceAnalyzer {
     private final JavaParser javaParser;
-    private final TypeSignatureResolver typeSignatureResolver = new TypeSignatureResolver();
-    private final CallerSignatureResolver callerSignatureResolver = new CallerSignatureResolver();
-    private final CalleeSignatureResolver calleeSignatureResolver = new CalleeSignatureResolver();
+    private final NodeWalker nodeWalker = new NodeWalker();
+    private final TypeMetadataResolver typeMetadataResolver = new TypeMetadataResolver();
+    private final CallerMetadataResolver callerMetadataResolver = new CallerMetadataResolver();
+    private final CalleeResolver calleeResolver = new CalleeResolver();
 
     public SourceAnalyzeResult analyze(Path base, Path file, Charset charset) {
         var name = base.relativize(file).toString();
@@ -56,20 +58,14 @@ public class SourceAnalyzer {
 
     List<TypeDeclaration<?>> findTypeDeclarations(Node n) {
         var c = new TypeDeclarationCollector();
-        n.walk(c::collect);
+        nodeWalker.walk(n, c);
         return c.declarations();
     }
 
     Type typeWithTypeDeclaration(TypeDeclaration<?> td) {
-        var s = typeSignatureResolver.resolve(td);
-        var a = typeAnnotationExprs(td);
+        var m = typeMetadataResolver.resolve(td);
         var c = callersWithTypeDeclaration(td);
-        var b = beginWithNodeWithRange(td);
-        return new Type(s, a, c, b);
-    }
-
-    List<TypeAnnotationExpr> typeAnnotationExprs(TypeDeclaration<?> d) {
-        return d.getAnnotations().stream().map(a -> new TypeAnnotationExpr(a.toString())).collect(Collectors.toList());
+        return new Type(m, c);
     }
 
     List<Caller> callersWithTypeDeclaration(TypeDeclaration<?> d) {
@@ -79,16 +75,14 @@ public class SourceAnalyzer {
 
     List<BodyDeclaration<?>> findBodyDeclarations(Node n) {
         var c = new BodyDeclarationCollector();
-        n.walk(c::collect);
+        nodeWalker.walk(n, c);
         return c.declarations();
     }
 
     Caller callerWithBodyDeclaration(BodyDeclaration<?> bd) {
-        var s = callerSignatureResolver.resolve(bd);
-        var a = callerAnnotationExprs(bd);
+        var m = callerMetadataResolver.resolve(bd);
         var c = calleesWithBodyDeclaration(bd);
-        var b = beginWithNodeWithRange(bd);
-        return new Caller(s, a, c, b);
+        return new Caller(m, c);
     }
 
     List<Callee> calleesWithBodyDeclaration(BodyDeclaration<?> d) {
@@ -96,23 +90,13 @@ public class SourceAnalyzer {
         return e.stream().map(this::calleeWithMethodCallExpr).collect(Collectors.toList());
     }
 
-    List<CallerAnnotationExpr> callerAnnotationExprs(BodyDeclaration<?> d) {
-        return d.getAnnotations().stream().map(a -> new CallerAnnotationExpr(a.toString())).collect(Collectors.toList());
-    }
-
     List<MethodCallExpr> findMethodCallExprs(Node n) {
         var c = new MethodCallExprCollector();
-        n.walk(c::collect);
+        nodeWalker.walk(n, c);
         return c.exprs();
     }
 
     Callee calleeWithMethodCallExpr(MethodCallExpr e) {
-        var s = calleeSignatureResolver.resolve(e);
-        var b = beginWithNodeWithRange(e);
-        return new Callee(s, b);
-    }
-
-    Position beginWithNodeWithRange(NodeWithRange<?> r) {
-        return r.getBegin().map(p -> new Position(p.line, p.column)).orElse(new Position(0, 0));
+        return calleeResolver.resolve(e);
     }
 }

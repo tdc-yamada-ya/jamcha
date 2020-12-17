@@ -1,6 +1,7 @@
 package jp.co.tdc.jamcha.model;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
@@ -15,8 +16,6 @@ import java.util.List;
 @Getter
 @Accessors(fluent = true)
 public class Caller {
-    private final CallerSignature signature;
-    private final List<CallerAnnotationExpr> annotationExprs;
-    private final List<Callee> callees;
-    private final Position begin;
+    @NonNull private final CallerMetadata metadata;
+    @NonNull private final List<Callee> callees;
 }
