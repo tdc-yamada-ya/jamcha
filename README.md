@@ -65,7 +65,7 @@ $ docker run \
   -v "/path/to/src:/src" \
   -v "/path/to/libs:/libs" \
   -v "/path/to/reports:/reports" \
-  docker.pkg.github.com/tdc-yamada-ya/jamcha/jamcha \
+  ghcr.io/tdc-yamada-ya/jamcha \
   -i /src \
   -s /src \
   -l /libs \
