@@ -1,0 +1,3 @@
+name,typePackageName,typeQualifiedName,typeName,typeBeginLine,typeBeginColumn,superTypeQualifiedName
+p07\T02.java,p07,p07.T02,T02,3,1,p07.T01
+p08\T02.java,p08,p08.T02,T02,3,1,p08.T01

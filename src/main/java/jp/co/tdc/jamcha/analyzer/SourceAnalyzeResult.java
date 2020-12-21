@@ -2,6 +2,7 @@ package jp.co.tdc.jamcha.analyzer;
 
 import jp.co.tdc.jamcha.model.Type;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
@@ -11,7 +12,7 @@ import java.util.List;
 @Getter
 @Accessors(fluent = true)
 public class SourceAnalyzeResult {
-    private final String name;
+    @NonNull private final String name;
     private final boolean successful;
-    private final List<Type> types;
+    @NonNull private final List<Type> types;
 }

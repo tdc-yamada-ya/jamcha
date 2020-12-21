@@ -6,8 +6,4 @@ public class SourceAnalyzeException extends RuntimeException {
     public SourceAnalyzeException(String message) {
         super(message);
     }
-
-    public SourceAnalyzeException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

@@ -40,3 +40,9 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+shadowJar{
+    if (project.hasProperty('archiveFileName')) {
+        archiveFileName = project.archiveFileName
+    }
+}

@@ -18,4 +18,4 @@ gradle/wrapper/gradle-wrapper.properties
 .idea/
 *.iml
 
-.reports/
+/.reports/

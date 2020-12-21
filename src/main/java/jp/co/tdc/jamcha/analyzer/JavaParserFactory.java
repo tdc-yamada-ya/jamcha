@@ -4,8 +4,12 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.resolution.SymbolResolver;
 import com.github.javaparser.symbolsolver.JavaSymbolSolver;
 import com.github.javaparser.symbolsolver.model.resolution.TypeSolver;
-import com.github.javaparser.symbolsolver.resolution.typesolvers.*;
+import com.github.javaparser.symbolsolver.resolution.typesolvers.CombinedTypeSolver;
+import com.github.javaparser.symbolsolver.resolution.typesolvers.JarTypeSolver;
+import com.github.javaparser.symbolsolver.resolution.typesolvers.JavaParserTypeSolver;
+import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeSolver;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.flogger.Flogger;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -13,9 +17,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
+@Flogger
 @RequiredArgsConstructor
 public class JavaParserFactory {
     private static final int JAR_DIRECTORY_MAX_DEPTH = 100;
@@ -23,9 +27,8 @@ public class JavaParserFactory {
     private final JavaParserConfiguration configuration;
 
     public JavaParser createJavaParser() {
-        var jc = createJavaParserConfiguration(configuration);
-        var p = new JavaParser(jc);
-        return p;
+        var c = createJavaParserConfiguration(configuration);
+        return new JavaParser(c);
     }
 
     com.github.javaparser.ParserConfiguration createJavaParserConfiguration(JavaParserConfiguration c) {
@@ -36,19 +39,24 @@ public class JavaParserFactory {
     }
 
     SymbolResolver createSymbolResolver(JavaParserConfiguration c) {
-        var combinedTypeSolver = new CombinedTypeSolver();
-        combinedTypeSolver.add(new ReflectionTypeSolver());
-        typeSolverStreamWithSourceDirectories(c.dependentSourceDirectories()).forEach(s -> combinedTypeSolver.add(s));
-        typeSolverStreamWithJarDirectories(c.dependentJarDirectories()).forEach(s -> combinedTypeSolver.add(s));
-        return new JavaSymbolSolver(combinedTypeSolver);
+        var cts = new CombinedTypeSolver();
+        cts.add(new ReflectionTypeSolver());
+        typeSolverStreamWithSourceDirectories(c.dependentSourceDirectories()).forEach(cts::add);
+        typeSolverStreamWithJarDirectories(c.dependentJarDirectories()).forEach(cts::add);
+
+        return new JavaSymbolSolver(cts);
+    }
+
+    void log(Path p) {
+        log.atInfo().log("add solver path: %s", p);
     }
 
     Stream<TypeSolver> typeSolverStreamWithSourceDirectories(List<Path> d) {
-        return d.stream().map(JavaParserTypeSolver::new);
+        return d.stream().peek(this::log).map(JavaParserTypeSolver::new);
     }
 
     Stream<TypeSolver> typeSolverStreamWithJarDirectories(List<Path> d) {
-        return d.stream().map(p -> findJarFiles(p)).flatMap(Function.identity()).map(this::tryNewJarTypeSolver);
+        return d.stream().flatMap(this::findJarFiles).peek(this::log).map(this::tryNewJarTypeSolver);
     }
 
     Stream<Path> findJarFiles(Path p) {
