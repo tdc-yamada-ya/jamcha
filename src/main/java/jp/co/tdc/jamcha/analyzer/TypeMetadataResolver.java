@@ -1,5 +1,6 @@
 package jp.co.tdc.jamcha.analyzer;
 
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
@@ -64,7 +65,7 @@ public class TypeMetadataResolver {
     }
 
     List<SuperType> ancestorSuperTypes(List<ResolvedReferenceType> l) {
-        return l.stream().map(this::superTypeWithResolved).collect(Collectors.toList());
+        return l.stream().map(this::superTypeWithResolved).sorted().collect(Collectors.toList());
     }
 
     NameRecord qualifiedNameWithUnresolved(TypeDeclaration<?> d) {
@@ -112,6 +113,10 @@ public class TypeMetadataResolver {
     }
 
     List<TypeAnnotationExpr> typeAnnotationExprs(TypeDeclaration<?> d) {
-        return d.getAnnotations().stream().map(a -> new TypeAnnotationExpr(a.toString())).collect(Collectors.toList());
+        return d.getAnnotations()
+            .stream()
+            .map(Node::toString)
+            .map(TypeAnnotationExpr::new)
+            .collect(Collectors.toList());
     }
 }

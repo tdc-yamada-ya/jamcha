@@ -1,6 +1,7 @@
 plugins {
     id 'com.github.johnrengelman.shadow' version '6.1.0'
     id 'java'
+    id 'jacoco'
 }
 
 group 'jp.co.tdc'
@@ -33,12 +34,22 @@ dependencies {
     testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testCompile 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testCompile 'org.mockito:mockito-junit-jupiter:3.6.28'
 }
 
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacoco {
+    toolVersion = "0.8.6"
+}
+
+jacocoTestReport {
+    dependsOn test
 }
 
 shadowJar{
