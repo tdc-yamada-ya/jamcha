@@ -94,11 +94,14 @@ public class Main {
     }
 
     Stream<SourceAnalyzeResult> analyzeWithDirectory(SourceAnalyzer a, Path d) {
-        return findJavaFiles(d).map(f -> analyzeWithFile(a, d, f));
+        return findJavaFiles(d).peek(this::log).map(f -> analyzeWithFile(a, d, f));
+    }
+
+    void log(Path p) {
+        log.atInfo().log("analyze file: %s", p.toString());
     }
 
     SourceAnalyzeResult analyzeWithFile(SourceAnalyzer a, Path d, Path f) {
-        log.atInfo().log("analyze file: %s", f.toString());
         return a.analyze(d, f, CHARSET);
     }
 

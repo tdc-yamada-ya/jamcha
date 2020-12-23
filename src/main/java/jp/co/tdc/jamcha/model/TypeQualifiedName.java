@@ -15,11 +15,17 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode
 @Getter
 @Accessors(fluent = true)
-public class TypeQualifiedName {
+public class TypeQualifiedName implements Comparable<TypeQualifiedName> {
     @NonNull private final String value;
 
     @Override
     public String toString() {
         return value;
+    }
+
+
+    @Override
+    public int compareTo(TypeQualifiedName o) {
+        return value.compareTo(o.value);
     }
 }
