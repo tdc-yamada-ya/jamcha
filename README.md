@@ -62,6 +62,9 @@ $ java -cp build/libs/jamcha-0.0.1-all.jar \
 
 [GitHub Container Registry](https://github.com/users/tdc-yamada-ya/packages/container/package/jamcha) にてこのツールのイメージを公開しています。
 
+以下の例は最新版 (`latest` タグ) を使用します。
+常に最新版を使用する場合は事前に `docker pull ghcr.io/tdc-yamada-ya/jamcha` を実行してください。
+
 ```bash
 $ docker run \
   -v "/path/to/src:/src" \
