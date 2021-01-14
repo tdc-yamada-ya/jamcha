@@ -64,6 +64,7 @@ $ java -cp build/libs/jamcha-0.0.1-all.jar \
 
 以下の例は最新版 (`latest` タグ) を使用します。
 常に最新版を使用する場合は事前に `docker pull ghcr.io/tdc-yamada-ya/jamcha` を実行してください。
+安定版を使用する場合は `ghcr.io/tdc-yamada-ya/jamcha:main` を指定してください。
 
 ```bash
 $ docker run \
