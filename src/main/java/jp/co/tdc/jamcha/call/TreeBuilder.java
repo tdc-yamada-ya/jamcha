@@ -3,6 +3,7 @@ package jp.co.tdc.jamcha.call;
 import jp.co.tdc.jamcha.call.tree.Node;
 import jp.co.tdc.jamcha.call.tree.Tree;
 import jp.co.tdc.jamcha.model.*;
+import lombok.extern.flogger.Flogger;
 
 import java.util.List;
 
@@ -105,6 +106,11 @@ public class TreeBuilder {
         }
 
         var caller = typeQualifiedNameMethodSignatureCallerMap.get(tqn, ms);
+
+        if (n.findAncestor(c -> c.data().methodQualifiedSignature().equals(caller.metadata().methodQualifiedSignature())) != null) {
+            return;
+        }
+
         var cn = n.add(newNodeDataForSubclass(tqn, caller));
         build(cn, caller, depth + 1);
     }
