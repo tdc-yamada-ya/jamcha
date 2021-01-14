@@ -54,6 +54,8 @@ public class Main {
         new CallerAnnotationReporter(newFileTableWriter("callerAnnotation.csv")).report(r);
         new CallReporter(newFileTableWriter("call.csv")).report(r);
         new ExpandedCallReporter(newFileTableWriter("expandedCall.csv")).report(ecr);
+
+        log.atInfo().log("output reports - directory: %s", configuration.outputDirectory());
     }
 
     TableWriter newFileTableWriter(String file) {
