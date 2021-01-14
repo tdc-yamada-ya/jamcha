@@ -78,6 +78,14 @@ $ docker run \
   -o /reports
 ```
 
+解析対象が巨大なために JVM メモリが不足する場合は `docker run` のオプションに
+[`--entrypoint`](https://docs.docker.com/engine/reference/run/#entrypoint-default-command-to-execute-at-runtime)
+を指定して、JVM メモリを拡張してください。
+
+```bash
+--entrypoint "java -Xmx2048m -cp ./jamcha.jar jp.co.tdc.jamcha.cmd.Main"
+```
+
 ## 制限事項
 
 -   [JavaParser] の TypeSolver が未対応のため `var` 変数のメソッド呼び出し階層を出力することができません。
