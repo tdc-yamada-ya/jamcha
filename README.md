@@ -83,7 +83,16 @@ $ docker run \
 を指定して、JVM メモリを拡張してください。
 
 ```bash
---entrypoint "java -Xmx2048m -cp ./jamcha.jar jp.co.tdc.jamcha.cmd.Main"
+$ docker run \
+  -v "/path/to/src:/src" \
+  -v "/path/to/libs:/libs" \
+  -v "/path/to/reports:/reports" \
+  ghcr.io/tdc-yamada-ya/jamcha \
+  -Xmx2048m -cp ./jamcha.jar jp.co.tdc.jamcha.cmd.Main \
+  -i /src \
+  -s /src \
+  -l /libs \
+  -o /reports
 ```
 
 ## 制限事項
